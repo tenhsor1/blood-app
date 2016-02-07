@@ -1,43 +1,286 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<!doctype html>
+<html class="no-js" ng-app="BloodApp">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>My AngularJS App</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-  <link rel="stylesheet" href="app.css">
-  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    <base href="/" target="_blank">
+    <meta charset="utf-8">
+    <title>BloodApp</title>
+    <meta name="description" content="Geospatial project">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
+
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#/view1">view1</a></li>
-    <li><a href="#/view2">view2</a></li>
-  </ul>
+<!-- Outer Wrapper-->
+<div id="outer-wrapper">
+    <!-- Inner Wrapper -->
+    <div id="inner-wrapper">
+      <div class="header">
+        <div class="wrapper">
+          <div class="brand"><a href="#">BloodApp</a></div>
+        </div>
+      </div>
+      <div id="page-canvas">
+        <!-- Map and Side Panel -->
+        <div id="page-content" ng-controller="MapCtrl">
+          <!-- Map Canvas-->
+          <div class="map-canvas list-width-50">
+              <!-- Map -->
+              <div class="map" style="height:95% !important;">
+                  <!--/.toggle-navigation-->
+                  <div id="map"></div>
+                  <!--/#map-->
+              </div>
+              <!-- end Map -->
+              <!--Items List-->
+              <div class="items-list">
+                  <div class="inner">
+                    <ul class="results list">
+                      <li ng-repeat="donor in visibleDonors">
+                        <div id="template-item" class="item">
+                          <a class="image loaded" href="#">
+                            <div class="inner">
+                              <img alt="" src="images/default-donor.png"></img>
+                            </div>
+                          </a>
+                          <div class="wrapper">
+                              <a href="#" id="1"><h3 class="item-name">{{donor.first_name}} {{donor.last_name}}</h3></a>
+                              <h3 class="item-blood">{{donor.blood_type}}</h3>
+                              <div>
+                                <b>E-mail:</b>
+                                <a class="item-contact-number hidden-value" href="" data-value="{{donor.email}}">Click to view</a>
+                              </div>
+                              <div>
+                                <b>Address:</b>
+                                <a class="item-address hidden-value" href="" data-value="{{donor.address}}">Click to view</a>
+                              </div>
+                          </div>
+                        </div>
+                      </li>
 
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
+                    </ul>
+                  </div>
+                  <!--results-->
+              </div>
+              <!--end Items List-->
+          </div>
+          <!-- end Map Canvas-->
+        </div>
+      </div>
+    </div>
+</div>
 
-  <div ng-view></div>
+<div ng-controller="FormCtrl">
+  <div id="modal-form" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;
+                  </button>
+                  <h4 class="modal-title">SIGN UP AS DONOR</h4>
+              </div>
+              <form name ="donorForm" ng-submit="submitDonor()" novalidate>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="badge">All fields required</span></label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Martin" ng-model="donor.firstName" ng-required="true" ng-minlength="2" ng-maxlength="45">
+                        <span class="col-error" ng-messages="donorForm.firstName.$error" ng-show="donorForm.firstName.$touched && donorForm.firstName.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Scorsese" ng-model="donor.lastName" ng-required="true" ng-minlength="2" ng-maxlength="45">
+                        <span class="col-error" ng-messages="donorForm.lastName.$error" ng-show="donorForm.lastName.$touched && donorForm.lastName.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="martin@scorsese.com" ng-model="donor.email" ng-required="true" ng-email="true">
+                        <span class="col-error" ng-messages="donorForm.email.$error" ng-show="donorForm.email.$touched && donorForm.email.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="phone" class="form-control" id="contactNumber" name="contactNumber" placeholder="233-444-5456" ng-model="donor.contactNumber" ng-required="true" ng-pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/">
+                        <span class="col-error" ng-messages="donorForm.contactNumber.$error" ng-show="donorForm.contactNumber.$touched && donorForm.contactNumber.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Evergreen 123, Springfield" ng-model="donor.address" ng-required="true" ng-minlength="6" ng-maxlength="100">
+                        <span class="col-error" ng-messages="donorForm.address.$error" ng-show="donorForm.address.$touched && donorForm.address.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="bloodType">Blood Type</label>
+                        <select class="form-control" id="bloodType" name="bloodType" ng-model="donor.bloodType" ng-required="true">
+                          <option value="O+" selected>O+</option>
+                          <option value="O-">O-</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                    </div>
 
-  <div>Angular seed app: v<span app-version></span></div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-danger" ng-disabled="donorForm.$invalid">Submit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+          </div>
+      </div>
+  </div>
 
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="app.js"></script>
-  <script src="view1/view1.js"></script>
-  <script src="view2/view2.js"></script>
-  <script src="components/version/version.js"></script>
-  <script src="components/version/version-directive.js"></script>
-  <script src="components/version/interpolate-filter.js"></script>
+  <div id="modal-edit-form" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;
+                  </button>
+                  <h4 class="modal-title">EDIT YOUR INFORMATION</h4>
+              </div>
+              <form name ="donorForm" ng-submit="editDonor()" novalidate>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="badge">All fields required</span></label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Martin" ng-model="donor.firstName" ng-required="true" ng-minlength="2" ng-maxlength="45">
+                        <span class="col-error" ng-messages="donorForm.firstName.$error" ng-show="donorForm.firstName.$touched && donorForm.firstName.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Scorsese" ng-model="donor.lastName" ng-required="true" ng-minlength="2" ng-maxlength="45">
+                        <span class="col-error" ng-messages="donorForm.lastName.$error" ng-show="donorForm.lastName.$touched && donorForm.lastName.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="martin@scorsese.com" ng-model="donor.email" ng-required="true" ng-email="true">
+                        <span class="col-error" ng-messages="donorForm.email.$error" ng-show="donorForm.email.$touched && donorForm.email.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="phone" class="form-control" id="contactNumber" name="contactNumber" placeholder="233-444-5456" ng-model="donor.contactNumber" ng-required="true" ng-pattern="/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/">
+                        <span class="col-error" ng-messages="donorForm.contactNumber.$error" ng-show="donorForm.contactNumber.$touched && donorForm.contactNumber.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Evergreen 123, Springfield" ng-model="donor.address" ng-required="true" ng-minlength="6" ng-maxlength="100">
+                        <span class="col-error" ng-messages="donorForm.address.$error" ng-show="donorForm.address.$touched && donorForm.address.$error" >
+                          <div ng-messages-include="messages.html"></div>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="bloodType">Blood Type</label>
+                        <select class="form-control" id="bloodType" name="bloodType" ng-model="donor.bloodType" ng-required="true">
+                          <option value="O+" selected>O+</option>
+                          <option value="O-">O-</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-danger" ng-disabled="donorForm.$invalid">Edit</button>
+                  <button type="button" class="btn btn-warning" ng-click="deleteDonor()">Delete</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+          </div>
+      </div>
+  </div>
+
+  <div id="modal-success" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;
+              </button>
+              <h4 class="modal-title">SUCCESS!</h4>
+          </div>
+          <div class="panel-body">
+            <p ng-bind-html="successMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-failure" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;
+              </button>
+              <h4 class="modal-title">ERROR</h4>
+          </div>
+          <div class="panel-body">
+            <p ng-bind-html="failureMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-warning" data-dismiss="modal">Ok</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCjyEzZmx5lRyR214e-P7oUTa2P3O7ObY"></script>
+<!-- Modernizr -->
+<script src="bower_components/modernizr/bin/modernizr"></script>
+<!-- JS Source -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/socket.io-client/socket.io.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-socket-io/socket.min.js"></script>
+<script src="bower_components/angular-messages/angular-messages.min.js"></script>
+<script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
+<script src="app.js"></script>
+<script src="services.js"></script>
+<script src="map/controller.js"></script>
+<script>
+  $(document).ready(function(){
+    //resize the height of the map to fit the screen
+    $('#map').height( $(window).height() - $('.header').height() );
+    var socket = io();
+    //for hidden values, when click, change the link for a span, and show the info
+    $(document).on('click', '.hidden-value', function(e){
+      $('<span>').html($(this).data('value')).insertAfter($(this));
+      $(this).remove();
+    });
+
+  });
+</script>
 </body>
 </html>

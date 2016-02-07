@@ -1,12 +1,16 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+angular.module('BloodApp', [
   'ngRoute',
-  'myApp.view1',
-  'myApp.view2',
-  'myApp.version'
+  'ngMessages',
+  'BloodApp.map',
+  'BloodApp.services',
+  'btford.socket-io'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.otherwise({redirectTo: '/'});
+}])
+.config(['$locationProvider', function($locationProvider){
+    $locationProvider.html5Mode(true);
 }]);
