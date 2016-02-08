@@ -1,8 +1,9 @@
 'use strict';
 
+var argv =          require('minimist')(process.argv.slice(2));
 var express         = require('express');
 var mongoose        = require('mongoose');
-var port            = process.env.PORT || 3000;
+var port            = parseInt(argv.p) || 3000;
 var bodyParser      = require('body-parser');
 var methodOverride  = require('method-override');
 var app             = express();
