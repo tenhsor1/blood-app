@@ -13,7 +13,7 @@ BloodApp is a platform that allow to connect blood donors with patients.
     * bower=^1.6.5
 
 ###Download:
-` git clone https://github.com/tenhsor1/blood-app
+` git clone https://github.com/tenhsor1/blood-app `
 
 ###Installation (Ubuntu 14.04):
 * requirements:
