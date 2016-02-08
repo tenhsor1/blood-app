@@ -59,7 +59,7 @@ or if you use forever:
 
 ` mocha `
 
-How it works:
+##How it works:
 Access from a modern browser (ie 9+) to: http://localhost:8000
 
 There are two columns on the page displayed:
